@@ -79,8 +79,8 @@ func (d *Document) getCompletions(item string) []protocol.CompletionItem {
 	snippetCompletionType := protocol.CompletionItemKindSnippet
 	snippetInsertTextFormat := protocol.InsertTextFormatSnippet
 	for label, s := range snippets {
-		snippet := s
 		if strings.HasPrefix(s, item) {
+			snippet := s
 			completions = append(completions, protocol.CompletionItem{
 				Label:            label,
 				InsertText:       &snippet,
