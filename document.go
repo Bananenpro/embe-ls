@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"sync"
 
+	"github.com/Bananenpro/embe/blocks"
 	"github.com/Bananenpro/embe/generator"
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
@@ -16,6 +17,7 @@ type Document struct {
 	content     string
 	changed     bool
 	diagnostics []protocol.Diagnostic
+	variables   map[string]*blocks.Variable
 }
 
 var documents sync.Map
@@ -80,7 +82,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	_, errs = generator.GenerateBlocks(statements, lines)
+	_, variables, errs := generator.GenerateBlocks(statements, lines)
 	if len(errs) > 0 {
 		for _, err := range errs {
 			if e, ok := err.(generator.GenerateError); ok {
@@ -104,6 +106,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		}
 		return
 	}
+	d.variables = variables
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
@@ -119,6 +122,7 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		content:     params.TextDocument.Text,
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
+		variables:   make(map[string]*blocks.Variable),
 	}
 	documents.Store(params.TextDocument.URI, document)
 	go document.validate(context.Notify)

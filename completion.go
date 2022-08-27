@@ -31,10 +31,10 @@ func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionPa
 	line := strings.TrimSpace(document.content[lineIndex:params.Position.IndexIn(document.content)])
 	parts := completionSplitRegex.Split(line, -1)
 
-	return document.getCompletions(parts[len(parts)-1]), nil
+	return document.getCompletions(parts[len(parts)-1], int(pos.Line)), nil
 }
 
-func (d *Document) getCompletions(item string) []protocol.CompletionItem {
+func (d *Document) getCompletions(item string, line int) []protocol.CompletionItem {
 	completions := make([]protocol.CompletionItem, 0)
 
 	eventCompletionType := protocol.CompletionItemKindEvent
@@ -58,6 +58,15 @@ func (d *Document) getCompletions(item string) []protocol.CompletionItem {
 	}
 
 	varCompletionType := protocol.CompletionItemKindVariable
+	for name, v := range d.variables {
+		if v.Name.Line < line && strings.HasPrefix(name, item) {
+			completions = append(completions, protocol.CompletionItem{
+				Label: name,
+				Kind:  &varCompletionType,
+			})
+		}
+	}
+
 	for v := range generator.Variables {
 		if strings.HasPrefix(v, item) {
 			completions = append(completions, protocol.CompletionItem{
