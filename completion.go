@@ -1,6 +1,7 @@
 package main
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/Bananenpro/embe/generator"
@@ -15,6 +16,8 @@ var snippets = map[string]string{
 	"var declaration": "var ${1:name}: ${2:type} = ${3:value}",
 }
 
+var completionSplitRegex = regexp.MustCompile(`[ (<>,!|&+\-\*/%=]`)
+
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
 	document, ok := getDocument(params.TextDocument.URI)
 	if !ok {
@@ -24,10 +27,9 @@ func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionPa
 	pos := params.Position
 	pos.Character = 0
 	lineIndex := pos.IndexIn(document.content)
-	endOfLineIndex := pos.EndOfLineIn(document.content)
 
-	line := strings.TrimSpace(document.content[lineIndex:endOfLineIndex.IndexIn(document.content)])
-	parts := strings.Split(line, " ")
+	line := strings.TrimSpace(document.content[lineIndex:params.Position.IndexIn(document.content)])
+	parts := completionSplitRegex.Split(line, -1)
 
 	return document.getCompletions(parts[len(parts)-1]), nil
 }
