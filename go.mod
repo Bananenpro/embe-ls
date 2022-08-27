@@ -3,7 +3,7 @@ module github.com/Bananenpro/embe-ls
 go 1.19
 
 require (
-	github.com/Bananenpro/embe v0.0.0-20220827132823-b55863a92e84
+	github.com/Bananenpro/embe v0.0.0-20220827152756-37653bd3378f
 	github.com/spf13/pflag v1.0.5
 	github.com/tliron/glsp v0.1.1
 	github.com/tliron/kutil v0.1.62
@@ -14,7 +14,6 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/muesli/termenv v0.12.0 // indirect
@@ -25,7 +24,6 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	github.com/zchee/color/v2 v2.0.6 // indirect
 	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d // indirect
 	golang.org/x/exp v0.0.0-20220826205824-bd9bcdd0b820 // indirect
 	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
