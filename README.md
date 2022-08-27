@@ -10,6 +10,64 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 - [ ] documentation on hover
 - [ ] symbol rename
 
+## Installation
+
+[Build](#building) the `embe-ls` binary and place it somewhere in your PATH.
+
+### VS Code
+
+Coming soon.
+
+### Neovim
+
+Install the [vim-embe](https://github.com/Bananenpro/vim-embe) plugin for syntax highlighting and indentation.
+
+#### coc
+
+In [`coc-settings.json`](https://github.com/neoclide/coc.nvim/wiki/Language-servers#register-custom-language-servers):
+```json
+{
+  "languageserver": {
+    "embe-ls": {
+      "command": "embe-ls",
+      "filetypes": ["embe"],
+      "rootPatterns": [".git/"]
+    }
+  }
+}
+```
+
+#### lspconfig
+
+In `init.lua`:
+```lua
+local lspconfig = require('lspconfig')
+local configs = require('lspconfig.configs')
+configs.embe = {
+  default_config = {
+    cmd = { "embe-ls" },
+    root_dir = lspconfig.util.root_pattern('.git'),
+    filetypes = { 'embe' },
+    init_options = {
+      command = { 'embe-ls' },
+    },
+  },
+}
+lspconfig.embe.setup{}
+```
+
+## Building
+
+### Prerequisites
+
+- [Go](https://go.dev) 1.19+
+
+```
+git clone https://github.com/Bananenpro/embe-ls
+cd embe-ls
+go build
+```
+
 ## License
 
 Copyright (c) 2022 Julian Hofmann
