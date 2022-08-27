@@ -8,6 +8,13 @@ import (
 	protocol "github.com/tliron/glsp/protocol_3_16"
 )
 
+var snippets = map[string]string{
+	"if statement":    "if ${1:condition}:\n  $0",
+	"while loop":      "while ${1:condition}:\n  $0",
+	"for loop":        "for ${1:count}:\n  $0",
+	"var declaration": "var ${1:name}: ${2:type} = ${3:value}",
+}
+
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
 	document, ok := getDocument(params.TextDocument.URI)
 	if !ok {
@@ -63,6 +70,20 @@ func (d *Document) getCompletions(item string) []protocol.CompletionItem {
 			completions = append(completions, protocol.CompletionItem{
 				Label: f,
 				Kind:  &funcCompletionType,
+			})
+		}
+	}
+
+	snippetCompletionType := protocol.CompletionItemKindSnippet
+	snippetInsertTextFormat := protocol.InsertTextFormatSnippet
+	for label, s := range snippets {
+		snippet := s
+		if strings.HasPrefix(s, item) {
+			completions = append(completions, protocol.CompletionItem{
+				Label:            label,
+				InsertText:       &snippet,
+				InsertTextFormat: &snippetInsertTextFormat,
+				Kind:             &snippetCompletionType,
 			})
 		}
 	}

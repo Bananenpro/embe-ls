@@ -6,6 +6,7 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 
 - [x] diagnostics
 - [x] code completion
+- [x] snippets
 - [ ] documentation on hover
 - [ ] symbol rename
 
