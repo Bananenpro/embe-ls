@@ -33,9 +33,10 @@ func main() {
 	}
 
 	var protocol string
-	pflag.StringVarP(&protocol, "protocol", "p", "stdio", "The protocol to use. ('stdio', 'tcp', 'websocket', 'nodejs')")
+	pflag.StringVarP(&protocol, "protocol", "p", "stdio", "The protocol to use. ('stdio', 'tcp', 'websocket', 'node-ipc')")
 	var address string
 	pflag.StringVarP(&address, "address", "a", ":4389", "The address to use for a TCP or WebSocket protocol.")
+	pflag.Parse()
 
 	server := server.NewServer(&handler, name, false)
 
@@ -47,7 +48,7 @@ func main() {
 		err = server.RunTCP(address)
 	case "websocket":
 		err = server.RunWebSocket(address)
-	case "nodejs":
+	case "node-ipc":
 		err = server.RunNodeJs()
 	default:
 		err = fmt.Errorf("unsupported protocol: %s", protocol)
