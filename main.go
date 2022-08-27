@@ -22,13 +22,14 @@ func main() {
 	logging.Configure(1, nil)
 
 	handler = protocol.Handler{
-		Initialize:            initialize,
-		Initialized:           initialized,
-		Shutdown:              shutdown,
-		SetTrace:              setTrace,
-		TextDocumentDidOpen:   textDocumentDidOpen,
-		TextDocumentDidChange: textDocumentDidChange,
-		TextDocumentDidClose:  textDocumentDidClose,
+		Initialize:             initialize,
+		Initialized:            initialized,
+		Shutdown:               shutdown,
+		SetTrace:               setTrace,
+		TextDocumentDidOpen:    textDocumentDidOpen,
+		TextDocumentDidChange:  textDocumentDidChange,
+		TextDocumentDidClose:   textDocumentDidClose,
+		TextDocumentCompletion: textDocumentCompletion,
 	}
 
 	var protocol string
@@ -56,6 +57,10 @@ func main() {
 
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
 	capabilities := handler.CreateServerCapabilities()
+	capabilities.TextDocumentSync = protocol.TextDocumentSyncKindIncremental
+	capabilities.CompletionProvider = &protocol.CompletionOptions{
+		TriggerCharacters: []string{"@", "."},
+	}
 	return protocol.InitializeResult{
 		Capabilities: capabilities,
 		ServerInfo: &protocol.InitializeResultServerInfo{

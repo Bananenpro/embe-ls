@@ -115,9 +115,10 @@ func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
 
 func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocumentParams) error {
 	document := &Document{
-		uri:     params.TextDocument.URI,
-		content: params.TextDocument.Text,
-		changed: true,
+		uri:         params.TextDocument.URI,
+		content:     params.TextDocument.Text,
+		changed:     true,
+		diagnostics: make([]protocol.Diagnostic, 0),
 	}
 	documents.Store(params.TextDocument.URI, document)
 	go document.validate(context.Notify)
@@ -147,7 +148,7 @@ func textDocumentDidClose(context *glsp.Context, params *protocol.DidCloseTextDo
 	if ok {
 		go context.Notify(protocol.ServerTextDocumentPublishDiagnostics, &protocol.PublishDiagnosticsParams{
 			URI:         params.TextDocument.URI,
-			Diagnostics: []protocol.Diagnostic{},
+			Diagnostics: make([]protocol.Diagnostic, 0),
 		})
 	}
 	return nil
