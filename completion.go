@@ -16,6 +16,14 @@ var snippets = map[string]string{
 	"var declaration": "var ${1:name}: ${2:type} = ${3:value}",
 }
 
+var keywords = []string{
+	"if", "elif", "else", "while", "for", "var",
+}
+
+var types = []string{
+	"number", "string", "boolean",
+}
+
 var completionSplitRegex = regexp.MustCompile(`[ (<>,!|&+\-\*/%=]`)
 
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
@@ -43,6 +51,26 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 			completions = append(completions, protocol.CompletionItem{
 				Label: e,
 				Kind:  &eventCompletionType,
+			})
+		}
+	}
+
+	keywordCompletionType := protocol.CompletionItemKindKeyword
+	for _, k := range keywords {
+		if strings.HasPrefix(k, item) {
+			completions = append(completions, protocol.CompletionItem{
+				Label: k,
+				Kind:  &keywordCompletionType,
+			})
+		}
+	}
+
+	classCompletionType := protocol.CompletionItemKindClass
+	for _, t := range types {
+		if strings.HasPrefix(t, item) {
+			completions = append(completions, protocol.CompletionItem{
+				Label: t,
+				Kind:  &classCompletionType,
 			})
 		}
 	}

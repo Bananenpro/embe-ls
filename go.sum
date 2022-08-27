@@ -1,7 +1,3 @@
-github.com/Bananenpro/embe v0.0.0-20220827152756-37653bd3378f h1:s2ITkYwe/aK+xoC6cjmffQB1JdO1+WpxwoNQmhm+pMk=
-github.com/Bananenpro/embe v0.0.0-20220827152756-37653bd3378f/go.mod h1:uAo+2R+fB8XABv5MuhNvhYib7l3iy7xMK0UtHW06Gbk=
-github.com/Bananenpro/embe v0.0.0-20220827210314-abf9dbfde0b5 h1:Yx30ooFe+cfs1/lwVS5umpuca4zp3OYeQAOK1g8f05w=
-github.com/Bananenpro/embe v0.0.0-20220827210314-abf9dbfde0b5/go.mod h1:uAo+2R+fB8XABv5MuhNvhYib7l3iy7xMK0UtHW06Gbk=
 github.com/Bananenpro/embe v0.0.0-20220827211808-64a792eadd5f h1:thQMwCTaKg5aewYMAvJbNKgBAe6i0q+iVjXUXxXupTs=
 github.com/Bananenpro/embe v0.0.0-20220827211808-64a792eadd5f/go.mod h1:uAo+2R+fB8XABv5MuhNvhYib7l3iy7xMK0UtHW06Gbk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -51,8 +47,6 @@ github.com/vmihailenco/tagparser/v2 v2.0.0 h1:y09buUbR+b5aycVFQs/g70pqKVZNBmxwAh
 github.com/vmihailenco/tagparser/v2 v2.0.0/go.mod h1:Wri+At7QHww0WTrCBeu4J6bNtoV6mEfg5OIWRZA9qds=
 golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d h1:3qF+Z8Hkrw9sOhrFHti9TlB1Hkac1x+DNRkv0XQiFjo=
 golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d/go.mod h1:IxCIyHEi3zRg3s0A5j5BB6A9Jmi73HwBIUl50j+osU4=
-golang.org/x/exp v0.0.0-20220826205824-bd9bcdd0b820 h1:X3V+zzJ9x4fA8jyAW0sk6T4NtY6+Z9uu/rAQxNwDYEM=
-golang.org/x/exp v0.0.0-20220826205824-bd9bcdd0b820/go.mod h1:cyybsKvd6eL0RnXn6p/Grxp8F5bW7iYuBgsNCOHpMYE=
 golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 h1:tnebWN09GYg9OLPss1KXj8txwZc6X6uMr6VFdcGNbHw=
 golang.org/x/exp v0.0.0-20220827204233-334a2380cb91/go.mod h1:cyybsKvd6eL0RnXn6p/Grxp8F5bW7iYuBgsNCOHpMYE=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
