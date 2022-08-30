@@ -36,6 +36,7 @@ func main() {
 	pflag.StringVarP(&protocol, "protocol", "p", "stdio", "The protocol to use. ('stdio', 'tcp', 'websocket', 'node-ipc')")
 	var address string
 	pflag.StringVarP(&address, "address", "a", ":4389", "The address to use for a TCP or WebSocket protocol.")
+	pflag.CommandLine.ParseErrorsWhitelist.UnknownFlags = true
 	pflag.Parse()
 
 	server := server.NewServer(&handler, name, false)

@@ -3,7 +3,7 @@ module github.com/Bananenpro/embe-ls
 go 1.19
 
 require (
-	github.com/Bananenpro/embe v0.0.0-20220827211808-64a792eadd5f
+	github.com/Bananenpro/embe v0.0.0-20220828155708-2fa1c8764ed4
 	github.com/spf13/pflag v1.0.5
 	github.com/tliron/glsp v0.1.1
 	github.com/tliron/kutil v0.1.62
@@ -24,8 +24,8 @@ require (
 	github.com/sourcegraph/jsonrpc2 v0.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d // indirect
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 // indirect
-	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64 // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035 // indirect
 )
