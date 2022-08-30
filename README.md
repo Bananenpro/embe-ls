@@ -16,11 +16,11 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 
 ### VS Code
 
-Coming soon.
+Install the [vscode-embe](https://github.com/Bananenpro/vscode-embe#installation) extension.
 
 ### Neovim
 
-Install the [vim-embe](https://github.com/Bananenpro/vim-embe) plugin for syntax highlighting and indentation.
+Install the [vim-embe](https://github.com/Bananenpro/vim-embe#installation) plugin for syntax highlighting and indentation.
 
 #### coc
 
