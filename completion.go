@@ -10,10 +10,11 @@ import (
 )
 
 var snippets = map[string]string{
-	"if statement":    "if ${1:condition}:\n  $0",
-	"while loop":      "while ${1:condition}:\n  $0",
-	"for loop":        "for ${1:count}:\n  $0",
-	"var declaration": "var ${1:name}: ${2:type} = ${3:value}",
+	"if statement":      "if ${1:condition}:\n  $0",
+	"while loop":        "while ${1:condition}:\n  $0",
+	"for loop":          "for ${1:count}:\n  $0",
+	"var declaration":   "var ${1:name}: ${2:type} = ${3:value}",
+	"const declaration": "const ${1:name}: ${2:type} = ${3:value}",
 }
 
 var keywords = []string{
