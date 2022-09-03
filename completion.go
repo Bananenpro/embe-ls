@@ -101,6 +101,16 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
+	constCompletionType := protocol.CompletionItemKindConstant
+	for name, c := range d.constants {
+		if c.Name.Line < line && strings.HasPrefix(name, item) {
+			completions = append(completions, protocol.CompletionItem{
+				Label: strings.TrimPrefix(name, base),
+				Kind:  &constCompletionType,
+			})
+		}
+	}
+
 	for v := range generator.Variables {
 		if strings.HasPrefix(v, item) {
 			completions = append(completions, protocol.CompletionItem{

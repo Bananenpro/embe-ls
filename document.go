@@ -18,6 +18,7 @@ type Document struct {
 	changed     bool
 	diagnostics []protocol.Diagnostic
 	variables   map[string]*blocks.Variable
+	constants   map[string]*generator.Constant
 }
 
 var documents sync.Map
@@ -82,7 +83,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	_, variables, errs := generator.GenerateBlocks(statements, lines)
+	_, variables, constants, errs := generator.GenerateBlocks(statements, lines)
 	if len(errs) > 0 {
 		for _, err := range errs {
 			if e, ok := err.(generator.GenerateError); ok {
@@ -107,6 +108,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 	d.variables = variables
+	d.constants = constants
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
