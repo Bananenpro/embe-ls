@@ -31,6 +31,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 
 	defer d.sendDiagnostics(notify)
 
+	severityWarning := protocol.DiagnosticSeverityWarning
 	severityError := protocol.DiagnosticSeverityError
 
 	d.diagnostics = d.diagnostics[:0]
@@ -83,7 +84,27 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	_, variables, constants, errs := generator.GenerateBlocks(statements, lines)
+	_, variables, constants, warnings, errs := generator.GenerateBlocks(statements, lines)
+	for _, warning := range warnings {
+		if w, ok := warning.(generator.GenerateError); ok {
+			d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
+				Range: protocol.Range{
+					Start: protocol.Position{
+						Line:      uint32(w.Token.Line),
+						Character: uint32(w.Token.Column),
+					},
+					End: protocol.Position{
+						Line:      uint32(w.Token.Line),
+						Character: uint32(w.Token.Column + len(w.Token.Lexeme)),
+					},
+				},
+				Severity: &severityWarning,
+				Message:  w.Message,
+			})
+		} else {
+			logging.GetLogger(name).Errorf("Failed to generate blocks for '%s': %s", d.uri, err)
+		}
+	}
 	if len(errs) > 0 {
 		for _, err := range errs {
 			if e, ok := err.(generator.GenerateError); ok {
