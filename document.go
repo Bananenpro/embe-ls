@@ -15,6 +15,7 @@ import (
 type Document struct {
 	uri         protocol.DocumentUri
 	content     string
+	tokens      []parser.Token
 	changed     bool
 	diagnostics []protocol.Diagnostic
 	variables   map[string]*blocks.Variable
@@ -58,6 +59,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		}
 		return
 	}
+	d.tokens = tokens
 
 	statements, errs := parser.Parse(tokens, lines)
 	if len(errs) > 0 {
@@ -143,6 +145,7 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 	document := &Document{
 		uri:         params.TextDocument.URI,
 		content:     params.TextDocument.Text,
+		tokens:      make([]parser.Token, 0),
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
 		variables:   make(map[string]*blocks.Variable),

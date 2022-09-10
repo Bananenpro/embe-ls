@@ -7,8 +7,8 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 - [x] diagnostics
 - [x] code completion
 - [x] snippets
+- [x] signature help
 - [ ] documentation on hover
-- [ ] signature help
 - [ ] symbol rename
 
 ## Installation
