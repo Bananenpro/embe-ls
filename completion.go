@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -53,11 +54,13 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	eventCompletionType := protocol.CompletionItemKindEvent
-	for e := range generator.Events {
-		if strings.HasPrefix("@"+e, item) {
+	for _, e := range generator.Events {
+		if strings.HasPrefix("@"+e.Name, item) {
+			detail := e.String()
 			completions = append(completions, protocol.CompletionItem{
-				Label: e,
-				Kind:  &eventCompletionType,
+				Label:  e.Name,
+				Kind:   &eventCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
@@ -65,9 +68,11 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	keywordCompletionType := protocol.CompletionItemKindKeyword
 	for _, k := range keywords {
 		if strings.HasPrefix(k, item) {
+			detail := k
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(k, base),
-				Kind:  &keywordCompletionType,
+				Label:  strings.TrimPrefix(k, base),
+				Kind:   &keywordCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
@@ -75,57 +80,69 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	classCompletionType := protocol.CompletionItemKindClass
 	for _, t := range types {
 		if strings.HasPrefix(t, item) {
+			detail := t
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(t, base),
-				Kind:  &classCompletionType,
+				Label:  strings.TrimPrefix(t, base),
+				Kind:   &classCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
 
 	funcCompletionType := protocol.CompletionItemKindFunction
-	for f := range generator.FuncCalls {
-		if strings.HasPrefix(f, item) {
+	for _, f := range generator.FuncCalls {
+		if strings.HasPrefix(f.Name, item) {
+			detail := f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(f, base),
-				Kind:  &funcCompletionType,
+				Label:  strings.TrimPrefix(f.Name, base),
+				Kind:   &funcCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
 
 	varCompletionType := protocol.CompletionItemKindVariable
-	for name, v := range d.variables {
-		if v.Name.Line < line && strings.HasPrefix(name, item) {
+	for _, v := range d.variables {
+		if v.Name.Line < line && strings.HasPrefix(v.Name.Lexeme, item) {
+			detail := fmt.Sprintf("var %s: %s", v.Name.Lexeme, v.DataType)
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(name, base),
-				Kind:  &varCompletionType,
+				Label:  strings.TrimPrefix(v.Name.Lexeme, base),
+				Kind:   &varCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
 
 	constCompletionType := protocol.CompletionItemKindConstant
-	for name, c := range d.constants {
-		if c.Name.Line < line && strings.HasPrefix(name, item) {
+	for _, c := range d.constants {
+		if c.Name.Line < line && strings.HasPrefix(c.Name.Lexeme, item) {
+			detail := fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Value.DataType, c.Value.Lexeme)
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(name, base),
-				Kind:  &constCompletionType,
+				Label:  strings.TrimPrefix(c.Name.Lexeme, base),
+				Kind:   &constCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
 
-	for v := range generator.Variables {
-		if strings.HasPrefix(v, item) {
+	for _, v := range generator.Variables {
+		if strings.HasPrefix(v.Name, item) {
+			detail := v.String()
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(v, base),
-				Kind:  &varCompletionType,
+				Label:  strings.TrimPrefix(v.Name, base),
+				Kind:   &varCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
 
-	for f := range generator.ExprFuncCalls {
-		if strings.HasPrefix(f, item) {
+	for _, f := range generator.ExprFuncCalls {
+		if strings.HasPrefix(f.Name, item) {
+			detail := f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
-				Label: strings.TrimPrefix(f, base),
-				Kind:  &funcCompletionType,
+				Label:  strings.TrimPrefix(f.Name, base),
+				Kind:   &funcCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
@@ -140,6 +157,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 				InsertText:       &snippet,
 				InsertTextFormat: &snippetInsertTextFormat,
 				Kind:             &snippetCompletionType,
+				Detail:           &snippet,
 			})
 		}
 	}
