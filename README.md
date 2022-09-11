@@ -32,7 +32,7 @@ In [`coc-settings.json`](https://github.com/neoclide/coc.nvim/wiki/Language-serv
     "embe-ls": {
       "command": "embe-ls",
       "filetypes": ["embe"],
-      "rootPatterns": [".git/"]
+      "rootPatterns": [".git/", "."]
     }
   }
 }
@@ -47,7 +47,7 @@ local configs = require('lspconfig.configs')
 configs.embe = {
   default_config = {
     cmd = { "embe-ls" },
-    root_dir = lspconfig.util.root_pattern('.git'),
+    root_dir = lspconfig.util.root_pattern('.git', '.'),
     filetypes = { 'embe' },
     init_options = {
       command = { 'embe-ls' },
