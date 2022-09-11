@@ -19,7 +19,7 @@ require (
 	github.com/muesli/termenv v0.12.0 // indirect
 	github.com/petermattis/goid v0.0.0-20220824145935-af5520614cb6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rivo/uniseg v0.4.0 // indirect
+	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/sasha-s/go-deadlock v0.3.1 // indirect
 	github.com/sourcegraph/jsonrpc2 v0.1.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect

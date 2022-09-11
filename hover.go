@@ -58,10 +58,17 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 	if signature == "" {
 		return nil, nil
 	}
+
+	value := fmt.Sprintf("```embe\n%s\n```", signature)
+
+	if docs, ok := documentation[token.Lexeme]; ok {
+		value += "\n---\n" + docs
+	}
+
 	return &protocol.Hover{
 		Contents: protocol.MarkupContent{
 			Kind:  protocol.MarkupKindMarkdown,
-			Value: fmt.Sprintf("```embe\n%s\n```", signature),
+			Value: value,
 		},
 	}, nil
 }

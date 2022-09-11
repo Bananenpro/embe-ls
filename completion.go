@@ -58,9 +58,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix("@"+e.Name, item) {
 			detail := e.String()
 			completions = append(completions, protocol.CompletionItem{
-				Label:  e.Name,
-				Kind:   &eventCompletionType,
-				Detail: &detail,
+				Label:         e.Name,
+				Kind:          &eventCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(e.Name),
 			})
 		}
 	}
@@ -70,9 +71,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix(k, item) {
 			detail := k
 			completions = append(completions, protocol.CompletionItem{
-				Label:  strings.TrimPrefix(k, base),
-				Kind:   &keywordCompletionType,
-				Detail: &detail,
+				Label:         strings.TrimPrefix(k, base),
+				Kind:          &keywordCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(k),
 			})
 		}
 	}
@@ -82,9 +84,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix(t, item) {
 			detail := t
 			completions = append(completions, protocol.CompletionItem{
-				Label:  strings.TrimPrefix(t, base),
-				Kind:   &classCompletionType,
-				Detail: &detail,
+				Label:         strings.TrimPrefix(t, base),
+				Kind:          &classCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(t),
 			})
 		}
 	}
@@ -94,9 +97,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix(f.Name, item) {
 			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
-				Label:  strings.TrimPrefix(f.Name, base),
-				Kind:   &funcCompletionType,
-				Detail: &detail,
+				Label:         strings.TrimPrefix(f.Name, base),
+				Kind:          &funcCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(f.Name),
 			})
 		}
 	}
@@ -129,9 +133,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix(v.Name, item) {
 			detail := v.String()
 			completions = append(completions, protocol.CompletionItem{
-				Label:  strings.TrimPrefix(v.Name, base),
-				Kind:   &varCompletionType,
-				Detail: &detail,
+				Label:         strings.TrimPrefix(v.Name, base),
+				Kind:          &varCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(v.Name),
 			})
 		}
 	}
@@ -140,9 +145,10 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		if strings.HasPrefix(f.Name, item) {
 			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
-				Label:  strings.TrimPrefix(f.Name, base),
-				Kind:   &funcCompletionType,
-				Detail: &detail,
+				Label:         strings.TrimPrefix(f.Name, base),
+				Kind:          &funcCompletionType,
+				Detail:        &detail,
+				Documentation: getDocs(f.Name),
 			})
 		}
 	}
