@@ -32,10 +32,14 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 
 	var signature string
 
+functions:
 	for _, f := range document.functions {
 		if int(params.Position.Line) >= f.StartLine && int(params.Position.Line) <= f.EndLine {
 			for _, p := range f.Params {
-				signature = fmt.Sprintf("var %s: %s", p.Name.Lexeme, p.Type.DataType)
+				if p.Name.Lexeme == identifierName {
+					signature = fmt.Sprintf("var %s: %s", p.Name.Lexeme, p.Type.DataType)
+					break functions
+				}
 			}
 		}
 	}

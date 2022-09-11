@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 
@@ -112,7 +111,6 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	for _, f := range d.functions {
 		if line >= f.StartLine && line <= f.EndLine {
 			for _, p := range f.Params {
-				fmt.Fprintf(os.Stderr, "[%s]", p.Name.Lexeme)
 				detail := fmt.Sprintf("var %s: %s", p.Name.Lexeme, p.Type.DataType)
 				parameters[p.Name.Lexeme] = struct{}{}
 				completions = append(completions, protocol.CompletionItem{
