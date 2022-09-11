@@ -1,64 +1,64 @@
 // events
-start
+@start
 This event is triggered when the script is loaded.
 ---
-button
+@button
 This event is triggered when the specified button is pressed.
 
 Buttons: `a`, `b`
 ---
-joystick
+@joystick
 This event is triggered when the joystick is pulled in the specified direction.
 
 Directions: `left`, `right`, `up`, `down`, `middle`
 ---
-tilt
+@tilt
 This event is triggered when the robot is tilted in the specified direction.
 
 Directions: `left`, `right`, `forward`, `backward`
 ---
-face
+@face
 This event is triggered when the screen of the robot is facing in the specified direction.
 
 Directions: `up`, `down`
 ---
-wave
+@wave
 This event is triggered when a waving motion in the specified direction is detected.
 
 Directions: `left`, `right`
 ---
-rotate
+@rotate
 This event is triggered when the robot is rotating in the specified direction.
 
 Directions: `clockwise`, `anticlockwise`
 ---
-fall
+@fall
 This event is triggered when the robot is falling.
 ---
-shake
+@shake
 This event is triggered when the robot is shaken.
 ---
-light
+@light
 This event is triggered when brightness of the environment fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
-sound
+@sound
 This event is triggered when loudness of the environment fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
-shakeval
+@shakeval
 This event is triggered when strength with which the robot is shaken fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
-timer
+@timer
 This event is triggered when the value of the timer fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
-receive
+@receive
 This event is triggered when the specified message is received over LAN.
 ---
 // variables

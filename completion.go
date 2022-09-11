@@ -61,7 +61,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 				Label:         e.Name,
 				Kind:          &eventCompletionType,
 				Detail:        &detail,
-				Documentation: getDocs(e.Name),
+				Documentation: getDocs("@" + e.Name),
 			})
 		}
 	}

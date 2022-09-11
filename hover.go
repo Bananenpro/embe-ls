@@ -28,9 +28,13 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 		return nil, nil
 	}
 
-	var signature string
+	identifierName := token.Lexeme
 
-	if f, ok := generator.FuncCalls[token.Lexeme]; ok {
+	var signature string
+	if e, ok := generator.Events[token.Lexeme]; ok && tokenIndex > 0 && document.tokens[tokenIndex-1].Type == parser.TkAt {
+		signature = e.String()
+		identifierName = "@" + identifierName
+	} else if f, ok := generator.FuncCalls[token.Lexeme]; ok {
 		paramCount := getParamCount(document.tokens, tokenIndex+2)
 		for _, s := range f.Signatures {
 			if len(s.Params) == paramCount {
@@ -52,8 +56,6 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 		signature = fmt.Sprintf("var %s: %s", cv.Name.Lexeme, cv.DataType)
 	} else if c, ok := document.constants[token.Lexeme]; ok {
 		signature = fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, c.Value.Lexeme)
-	} else if e, ok := generator.Events[token.Lexeme]; ok {
-		signature = e.String()
 	}
 	if signature == "" {
 		return nil, nil
@@ -61,7 +63,7 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 
 	value := fmt.Sprintf("```embe\n%s\n```", signature)
 
-	if docs, ok := documentation[token.Lexeme]; ok {
+	if docs, ok := documentation[identifierName]; ok {
 		value += "\n---\n" + docs
 	}
 
