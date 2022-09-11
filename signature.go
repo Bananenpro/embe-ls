@@ -44,6 +44,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 		if t.Line == int(params.Position.Line) && t.Column == parenIndices[len(parenIndices)-1] {
 			identifier = document.tokens[i-1]
 			identifierIndex = i
+			break
 		}
 	}
 
@@ -85,6 +86,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 	for i, s := range signatures {
 		if len(s.Params) == paramCount {
 			activeSignature = uint32(i)
+			break
 		}
 	}
 

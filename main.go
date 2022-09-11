@@ -31,6 +31,7 @@ func main() {
 		TextDocumentDidClose:      textDocumentDidClose,
 		TextDocumentCompletion:    textDocumentCompletion,
 		TextDocumentSignatureHelp: textDocumentSignatureHelp,
+		TextDocumentHover:         textDocumentHover,
 	}
 
 	var protocol string
@@ -65,8 +66,7 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 		TriggerCharacters: []string{"@", "."},
 	}
 	capabilities.SignatureHelpProvider = &protocol.SignatureHelpOptions{
-		TriggerCharacters:   []string{"("},
-		RetriggerCharacters: []string{","},
+		TriggerCharacters: []string{"(", ","},
 	}
 	return protocol.InitializeResult{
 		Capabilities: capabilities,

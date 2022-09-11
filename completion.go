@@ -92,7 +92,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	funcCompletionType := protocol.CompletionItemKindFunction
 	for _, f := range generator.FuncCalls {
 		if strings.HasPrefix(f.Name, item) {
-			detail := f.Signatures[0].String()
+			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(f.Name, base),
 				Kind:   &funcCompletionType,
@@ -138,7 +138,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 
 	for _, f := range generator.ExprFuncCalls {
 		if strings.HasPrefix(f.Name, item) {
-			detail := f.Signatures[0].String()
+			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(f.Name, base),
 				Kind:   &funcCompletionType,
