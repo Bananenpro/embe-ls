@@ -57,6 +57,20 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 		signatures = f.Signatures
 	} else if f, ok := generator.FuncCalls[identifier.Lexeme]; ok {
 		signatures = f.Signatures
+	} else if f, ok := document.functions[identifier.Lexeme]; ok {
+		params := make([]generator.Param, 0)
+		for _, p := range f.Params {
+			params = append(params, generator.Param{
+				Name: p.Name.Lexeme,
+				Type: p.Type.DataType,
+			})
+		}
+		signatures = []generator.Signature{
+			{
+				FuncName: f.Name.Lexeme,
+				Params:   params,
+			},
+		}
 	} else {
 		return nil, nil
 	}

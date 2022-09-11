@@ -31,32 +31,53 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 	identifierName := token.Lexeme
 
 	var signature string
-	if e, ok := generator.Events[token.Lexeme]; ok && tokenIndex > 0 && document.tokens[tokenIndex-1].Type == parser.TkAt {
-		signature = e.String()
-		identifierName = "@" + identifierName
-	} else if f, ok := generator.FuncCalls[token.Lexeme]; ok {
-		paramCount := getParamCount(document.tokens, tokenIndex+2)
-		for _, s := range f.Signatures {
-			if len(s.Params) == paramCount {
-				signature = s.String()
-				break
+
+	for _, f := range document.functions {
+		if int(params.Position.Line) >= f.StartLine && int(params.Position.Line) <= f.EndLine {
+			for _, p := range f.Params {
+				signature = fmt.Sprintf("var %s: %s", p.Name.Lexeme, p.Type.DataType)
 			}
 		}
-	} else if ef, ok := generator.ExprFuncCalls[token.Lexeme]; ok {
-		paramCount := getParamCount(document.tokens, tokenIndex+2)
-		for _, s := range ef.Signatures {
-			if len(s.Params) == paramCount {
-				signature = s.String()
-				break
-			}
-		}
-	} else if v, ok := generator.Variables[token.Lexeme]; ok {
-		signature = v.String()
-	} else if cv, ok := document.variables[token.Lexeme]; ok {
-		signature = fmt.Sprintf("var %s: %s", cv.Name.Lexeme, cv.DataType)
-	} else if c, ok := document.constants[token.Lexeme]; ok {
-		signature = fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, c.Value.Lexeme)
 	}
+
+	if signature == "" {
+		if e, ok := generator.Events[token.Lexeme]; ok && tokenIndex > 0 && document.tokens[tokenIndex-1].Type == parser.TkAt {
+			signature = e.String()
+			identifierName = "@" + identifierName
+		} else if f, ok := generator.FuncCalls[token.Lexeme]; ok {
+			paramCount := getParamCount(document.tokens, tokenIndex+2)
+			for _, s := range f.Signatures {
+				if len(s.Params) == paramCount {
+					signature = "func " + s.String()
+					break
+				}
+			}
+		} else if ef, ok := generator.ExprFuncCalls[token.Lexeme]; ok {
+			paramCount := getParamCount(document.tokens, tokenIndex+2)
+			for _, s := range ef.Signatures {
+				if len(s.Params) == paramCount {
+					signature = "func " + s.String()
+					break
+				}
+			}
+		} else if v, ok := generator.Variables[token.Lexeme]; ok {
+			signature = v.String()
+		} else if cv, ok := document.variables[token.Lexeme]; ok {
+			signature = fmt.Sprintf("var %s: %s", cv.Name.Lexeme, cv.DataType)
+		} else if c, ok := document.constants[token.Lexeme]; ok {
+			signature = fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, c.Value.Lexeme)
+		} else if cf, ok := document.functions[token.Lexeme]; ok {
+			signature = "func " + cf.Name.Lexeme + "("
+			for i, p := range cf.Params {
+				if i > 0 {
+					signature += ", "
+				}
+				signature += p.Name.Lexeme + ": " + string(p.Type.DataType)
+			}
+			signature += ")"
+		}
+	}
+
 	if signature == "" {
 		return nil, nil
 	}

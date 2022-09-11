@@ -20,6 +20,7 @@ type Document struct {
 	diagnostics []protocol.Diagnostic
 	variables   map[string]*blocks.Variable
 	constants   map[string]*generator.Constant
+	functions   map[string]*generator.Function
 }
 
 var documents sync.Map
@@ -86,7 +87,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	_, variables, constants, warnings, errs := generator.GenerateBlocks(statements, lines)
+	_, variables, constants, functions, warnings, errs := generator.GenerateBlocks(statements, lines)
 	for _, warning := range warnings {
 		if w, ok := warning.(generator.GenerateError); ok {
 			d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
@@ -132,6 +133,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 	}
 	d.variables = variables
 	d.constants = constants
+	d.functions = functions
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
@@ -149,6 +151,8 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
 		variables:   make(map[string]*blocks.Variable),
+		constants:   make(map[string]*generator.Constant),
+		functions:   make(map[string]*generator.Function),
 	}
 	documents.Store(params.TextDocument.URI, document)
 	go document.validate(context.Notify)

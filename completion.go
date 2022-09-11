@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
@@ -16,6 +17,7 @@ var snippets = map[string]string{
 	"for loop":          "for ${1:count}:\n  $0",
 	"var declaration":   "var ${1:name}: ${2:type} = ${3:value}",
 	"const declaration": "const ${1:name}: ${2:type} = ${3:value}",
+	"func declaration":  "func ${1:name}(${2:parameters}):\n  $0",
 }
 
 var keywords = []string{
@@ -106,8 +108,48 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	varCompletionType := protocol.CompletionItemKindVariable
+	parameters := make(map[string]struct{})
+	for _, f := range d.functions {
+		if line >= f.StartLine && line <= f.EndLine {
+			for _, p := range f.Params {
+				fmt.Fprintf(os.Stderr, "[%s]", p.Name.Lexeme)
+				detail := fmt.Sprintf("var %s: %s", p.Name.Lexeme, p.Type.DataType)
+				parameters[p.Name.Lexeme] = struct{}{}
+				completions = append(completions, protocol.CompletionItem{
+					Label:  strings.TrimPrefix(p.Name.Lexeme, base),
+					Kind:   &varCompletionType,
+					Detail: &detail,
+				})
+			}
+		}
+	}
+
+	for _, f := range d.functions {
+		if f.Name.Line < line && strings.HasPrefix(f.Name.Lexeme, item) {
+			if _, ok := parameters[f.Name.Lexeme]; ok {
+				continue
+			}
+			detail := "func " + f.Name.Lexeme + "("
+			for i, p := range f.Params {
+				if i > 0 {
+					detail += ", "
+				}
+				detail += p.Name.Lexeme + ": " + string(p.Type.DataType)
+			}
+			detail += ")"
+			completions = append(completions, protocol.CompletionItem{
+				Label:  strings.TrimPrefix(f.Name.Lexeme, base),
+				Kind:   &funcCompletionType,
+				Detail: &detail,
+			})
+		}
+	}
+
 	for _, v := range d.variables {
 		if v.Name.Line < line && strings.HasPrefix(v.Name.Lexeme, item) {
+			if _, ok := parameters[v.Name.Lexeme]; ok {
+				continue
+			}
 			detail := fmt.Sprintf("var %s: %s", v.Name.Lexeme, v.DataType)
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(v.Name.Lexeme, base),
@@ -120,6 +162,9 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	constCompletionType := protocol.CompletionItemKindConstant
 	for _, c := range d.constants {
 		if c.Name.Line < line && strings.HasPrefix(c.Name.Lexeme, item) {
+			if _, ok := parameters[c.Name.Lexeme]; ok {
+				continue
+			}
 			detail := fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Value.DataType, c.Value.Lexeme)
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(c.Name.Lexeme, base),
