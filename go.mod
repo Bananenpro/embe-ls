@@ -3,7 +3,7 @@ module github.com/Bananenpro/embe-ls
 go 1.19
 
 require (
-	github.com/Bananenpro/embe v0.0.0-20220911133456-adec1522c2fc
+	github.com/Bananenpro/embe v0.0.0-20220911154329-80f21478e015
 	github.com/spf13/pflag v1.0.5
 	github.com/tliron/glsp v0.1.1
 	github.com/tliron/kutil v0.1.62

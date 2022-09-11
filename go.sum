@@ -1,5 +1,5 @@
-github.com/Bananenpro/embe v0.0.0-20220911133456-adec1522c2fc h1:zSYHLnxmAeAISrLX3hOoEcdk5A18xzuezmK/Tl3zR1s=
-github.com/Bananenpro/embe v0.0.0-20220911133456-adec1522c2fc/go.mod h1:KP07+YqSgXayF0u7ayttkgfTZRxmpnRre27OkYVpcYc=
+github.com/Bananenpro/embe v0.0.0-20220911154329-80f21478e015 h1:2aEwDFtUuQsdAFdfocbAhdwjMMTSLh+r8O8HFsw56Ag=
+github.com/Bananenpro/embe v0.0.0-20220911154329-80f21478e015/go.mod h1:KP07+YqSgXayF0u7ayttkgfTZRxmpnRre27OkYVpcYc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
