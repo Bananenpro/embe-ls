@@ -13,7 +13,7 @@ import (
 
 var (
 	name    = "embe-ls"
-	version = "0.0.1"
+	version = "0.1.1"
 )
 
 var handler protocol.Handler
@@ -22,16 +22,18 @@ func main() {
 	logging.Configure(1, nil)
 
 	handler = protocol.Handler{
-		Initialize:                initialize,
-		Initialized:               initialized,
-		Shutdown:                  shutdown,
-		SetTrace:                  setTrace,
-		TextDocumentDidOpen:       textDocumentDidOpen,
-		TextDocumentDidChange:     textDocumentDidChange,
-		TextDocumentDidClose:      textDocumentDidClose,
-		TextDocumentCompletion:    textDocumentCompletion,
-		TextDocumentSignatureHelp: textDocumentSignatureHelp,
-		TextDocumentHover:         textDocumentHover,
+		Initialize:                    initialize,
+		Initialized:                   initialized,
+		Shutdown:                      shutdown,
+		SetTrace:                      setTrace,
+		TextDocumentDidOpen:           textDocumentDidOpen,
+		TextDocumentDidChange:         textDocumentDidChange,
+		TextDocumentDidClose:          textDocumentDidClose,
+		TextDocumentCompletion:        textDocumentCompletion,
+		TextDocumentSignatureHelp:     textDocumentSignatureHelp,
+		TextDocumentHover:             textDocumentHover,
+		TextDocumentColor:             textDocumentColor,
+		TextDocumentColorPresentation: textDocumentColorPresentation,
 	}
 
 	var protocol string
