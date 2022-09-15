@@ -194,6 +194,9 @@ Display a color with an LED at the back of the robot for a specified number of s
 lights.back.deactivate
 Deactivate the lights at the back of the robot.
 ---
+lights.back.move
+Moves every color `n` LEDs to the right.
+---
 display.print
 Print a message on the display.
 ---
@@ -307,6 +310,12 @@ Lock a motor.
 motors.unlock
 Unlock a motor.
 ---
+time.wait
+Wait a specific number of seconds or until a condition is met.
+---
+time.resetTimer
+Reset the timer.
+---
 mbot.restart
 Restart the robot.
 ---
@@ -324,6 +333,21 @@ Stop all scripts.
 ---
 script.stopOther
 Stop all other scripts.
+---
+lists.append
+Append an item to the list.
+---
+lists.remove
+Remove an item from the list.
+---
+lists.clear
+Remove all items from the list.
+---
+lists.insert
+Insert the item at `index`.
+---
+lists.replace
+Replace the item at `index` with `value`.
 ---
 // expression functions
 mbot.isButtonPressed
@@ -496,3 +520,15 @@ Returns the letter at the index in the string.
 ---
 strings.contains
 Whether the string contains the substring.
+---
+lists.get
+Get the item at `index` in the list.
+---
+lists.indexOf
+Get the index of `value`.
+---
+lists.length
+Get the number of items in the list.
+---
+lists.contains
+Check whether the list contains `value`.

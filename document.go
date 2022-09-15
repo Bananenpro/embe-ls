@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/Bananenpro/embe/blocks"
 	"github.com/Bananenpro/embe/generator"
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
@@ -18,7 +17,8 @@ type Document struct {
 	tokens      []parser.Token
 	changed     bool
 	diagnostics []protocol.Diagnostic
-	variables   map[string]*blocks.Variable
+	variables   map[string]*generator.Variable
+	lists       map[string]*generator.List
 	constants   map[string]*generator.Constant
 	functions   map[string]*generator.Function
 }
@@ -87,8 +87,8 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	_, variables, constants, functions, warnings, errs := generator.GenerateBlocks(statements, lines)
-	for _, warning := range warnings {
+	result := generator.GenerateBlocks(statements, lines)
+	for _, warning := range result.Warnings {
 		if w, ok := warning.(generator.GenerateError); ok {
 			d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
 				Range: protocol.Range{
@@ -108,8 +108,8 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 			logging.GetLogger(name).Errorf("Failed to generate blocks for '%s': %s", d.uri, err)
 		}
 	}
-	if len(errs) > 0 {
-		for _, err := range errs {
+	if len(result.Errors) > 0 {
+		for _, err := range result.Errors {
 			if e, ok := err.(generator.GenerateError); ok {
 				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
 					Range: protocol.Range{
@@ -131,9 +131,10 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		}
 		return
 	}
-	d.variables = variables
-	d.constants = constants
-	d.functions = functions
+	d.variables = result.Variables
+	d.lists = result.Lists
+	d.constants = result.Constants
+	d.functions = result.Functions
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
@@ -150,7 +151,8 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		tokens:      make([]parser.Token, 0),
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
-		variables:   make(map[string]*blocks.Variable),
+		variables:   make(map[string]*generator.Variable),
+		lists:       make(map[string]*generator.List),
 		constants:   make(map[string]*generator.Constant),
 		functions:   make(map[string]*generator.Function),
 	}

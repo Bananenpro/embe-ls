@@ -157,6 +157,20 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
+	for _, l := range d.lists {
+		if l.Name.Line < line && strings.HasPrefix(l.Name.Lexeme, item) {
+			if _, ok := parameters[l.Name.Lexeme]; ok {
+				continue
+			}
+			detail := fmt.Sprintf("var %s: %s", l.Name.Lexeme, l.DataType)
+			completions = append(completions, protocol.CompletionItem{
+				Label:  strings.TrimPrefix(l.Name.Lexeme, base),
+				Kind:   &varCompletionType,
+				Detail: &detail,
+			})
+		}
+	}
+
 	constCompletionType := protocol.CompletionItemKindConstant
 	for _, c := range d.constants {
 		if c.Name.Line < line && strings.HasPrefix(c.Name.Lexeme, item) {

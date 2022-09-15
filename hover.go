@@ -68,6 +68,8 @@ functions:
 			signature = v.String()
 		} else if cv, ok := document.variables[token.Lexeme]; ok {
 			signature = fmt.Sprintf("var %s: %s", cv.Name.Lexeme, cv.DataType)
+		} else if l, ok := document.lists[token.Lexeme]; ok {
+			signature = fmt.Sprintf("var %s: %s", l.Name.Lexeme, l.DataType)
 		} else if c, ok := document.constants[token.Lexeme]; ok {
 			signature = fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, c.Value.Lexeme)
 		} else if cf, ok := document.functions[token.Lexeme]; ok {
