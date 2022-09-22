@@ -71,6 +71,24 @@ cd embe-ls
 go build
 ```
 
+## Config
+
+You can configure _embe-ls_ in one of the following locations:
+
+- Windows: `%LOCALAPPDATA%\embe-ls\config.json`
+- MacOS: `~/Library/Application Support/embe-ls/config.json`
+- Linux: `~/.config/embe-ls/config.json`
+
+Example config:
+
+```jsonc
+{
+	"log_file": "~/.cache/embe-ls.log", // the path for logging output (directory must exist) (leave empty to disable logging, default: "")
+	"log_level": "trace", // the minimum log level (possible values: trace, info, warning, error, fatal, none, default: warning)
+	"lsp_log_file": "~/.cache/embe-ls-lsp.log" // the path for Language Server Protocol logging output (leave empty to disable protocol logging, default: "")
+}
+```
+
 ## License
 
 Copyright (c) 2022 Julian Hofmann

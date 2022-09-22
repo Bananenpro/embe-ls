@@ -5,6 +5,8 @@ import (
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 func textDocumentSignatureHelp(context *glsp.Context, params *protocol.SignatureHelpParams) (*protocol.SignatureHelp, error) {
@@ -12,6 +14,8 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 	if !ok {
 		return nil, nil
 	}
+
+	log.Trace("Signature help at %v.", params.Position)
 
 	pos := params.Position
 	startPos := pos
@@ -32,6 +36,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 		}
 	}
 	if len(parenIndices) == 0 {
+		log.Warn("Requesting signature help but not in a function at %v. Line: %s", pos, line)
 		return nil, nil
 	}
 
@@ -49,6 +54,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 	}
 
 	if (identifier == parser.Token{}) {
+		log.Error("Couldn't find token under cursor.")
 		return nil, nil
 	}
 
@@ -72,6 +78,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 			},
 		}
 	} else {
+		log.Error("Couldn't find signature for token: %s", identifier)
 		return nil, nil
 	}
 
@@ -117,6 +124,8 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 			Parameters: parameters,
 		}
 	}
+
+	log.Trace("Sending signature help: activeSignature: %d; activeParameter: %d, signatures: %v", activeSignature, paramIndex, signatureInformation)
 
 	return &protocol.SignatureHelp{
 		Signatures:      signatureInformation,

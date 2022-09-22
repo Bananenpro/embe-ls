@@ -6,6 +6,8 @@ import (
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 var colors = map[string]protocol.Color{
@@ -62,6 +64,8 @@ func textDocumentColor(context *glsp.Context, params *protocol.DocumentColorPara
 		return nil, nil
 	}
 
+	log.Trace("Collecting color information...")
+
 	colorInformation := make([]protocol.ColorInformation, 0)
 	for _, t := range document.tokens {
 		if t.Type != parser.TkLiteral || t.DataType != parser.DTString {
@@ -115,6 +119,7 @@ func textDocumentColor(context *glsp.Context, params *protocol.DocumentColorPara
 			},
 		})
 	}
+	log.Trace("Collected color information.")
 
 	return colorInformation, nil
 }
@@ -123,7 +128,9 @@ func textDocumentColorPresentation(context *glsp.Context, params *protocol.Color
 	r := int(params.Color.Red * 255)
 	g := int(params.Color.Green * 255)
 	b := int(params.Color.Blue * 255)
+	label := fmt.Sprintf("\"#%02x%02x%02x\"", r, g, b)
+	log.Trace("Color presentation. Input: rgb(%f, %f, %f), Output: %s", params.Color.Red, params.Color.Green, params.Color.Blue, label)
 	return []protocol.ColorPresentation{{
-		Label: fmt.Sprintf("\"#%02x%02x%02x\"", r, g, b),
+		Label: label,
 	}}, nil
 }

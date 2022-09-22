@@ -7,6 +7,8 @@ import (
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*protocol.Hover, error) {
@@ -25,8 +27,10 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 		}
 	}
 	if token.Type != parser.TkIdentifier {
+		log.Warn("Hover on non identifier at %v.", params.Position)
 		return nil, nil
 	}
+	log.Trace("Document hover at position: %v; token: %v", params.Position, token)
 
 	identifierName := token.Lexeme
 
@@ -85,8 +89,10 @@ functions:
 	}
 
 	if signature == "" {
+		log.Error("No hover signature found.")
 		return nil, nil
 	}
+	log.Trace("Found signature: %s", signature)
 
 	value := fmt.Sprintf("```embe\n%s\n```", signature)
 

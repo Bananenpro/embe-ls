@@ -8,6 +8,8 @@ import (
 	"github.com/Bananenpro/embe/generator"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 var snippets = map[string]string{
@@ -30,6 +32,7 @@ var types = []string{
 var completionSplitRegex = regexp.MustCompile(`[ (<>,!|&+\-\*/%=]`)
 
 func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionParams) (any, error) {
+	log.Trace("Completion at %v.", params.Position)
 	document, ok := getDocument(params.TextDocument.URI)
 	if !ok {
 		return nil, nil
@@ -46,6 +49,7 @@ func textDocumentCompletion(context *glsp.Context, params *protocol.CompletionPa
 }
 
 func (d *Document) getCompletions(item string, line int) []protocol.CompletionItem {
+	log.Trace("Collecting completions for: %s", item)
 	completions := make([]protocol.CompletionItem, 0)
 
 	parts := strings.Split(item, ".")

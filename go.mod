@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/Bananenpro/embe v0.1.3
+	github.com/adrg/xdg v0.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/tliron/glsp v0.1.2-0.20220804144236-0fe570f215a5
 	github.com/tliron/kutil v0.1.62

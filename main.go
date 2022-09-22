@@ -8,18 +8,22 @@ import (
 	protocol "github.com/tliron/glsp/protocol_3_16"
 	"github.com/tliron/glsp/server"
 	"github.com/tliron/kutil/logging"
-	"github.com/tliron/kutil/util"
+	_ "github.com/tliron/kutil/logging/simple"
+
+	"github.com/Bananenpro/embe-ls/config"
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 var (
 	name    = "embe-ls"
-	version = "0.1.2"
+	version = "0.1.3"
 )
 
 var handler protocol.Handler
 
 func main() {
-	logging.Configure(1, nil)
+	log.Info("Starting %s v%s...", name, version)
+	logging.Configure(2, config.GLSPLogFile)
 
 	handler = protocol.Handler{
 		Initialize:                    initialize,
@@ -43,25 +47,32 @@ func main() {
 	pflag.CommandLine.ParseErrorsWhitelist.UnknownFlags = true
 	pflag.Parse()
 
-	server := server.NewServer(&handler, name, false)
+	server := server.NewServer(&handler, name, config.GLSPLogFile != nil)
 
 	var err error
 	switch protocol {
 	case "stdio":
+		log.Info("Protocol: STDIO")
 		err = server.RunStdio()
 	case "tcp":
+		log.Info("Protocol: TCP")
 		err = server.RunTCP(address)
 	case "websocket":
+		log.Info("Protocol: WebSocket")
 		err = server.RunWebSocket(address)
 	case "node-ipc":
+		log.Info("Protocol: Node IPC")
 		err = server.RunNodeJs()
 	default:
-		err = fmt.Errorf("unsupported protocol: %s", protocol)
+		err = fmt.Errorf("Unsupported protocol: %s", protocol)
 	}
-	util.FailOnError(err)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
 
 func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
+	log.Trace("Initializing capabilities...")
 	capabilities := handler.CreateServerCapabilities()
 	capabilities.TextDocumentSync = protocol.TextDocumentSyncKindIncremental
 	capabilities.CompletionProvider = &protocol.CompletionOptions{
@@ -80,10 +91,12 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 }
 
 func initialized(context *glsp.Context, params *protocol.InitializedParams) error {
+	log.Trace("Initialized.")
 	return nil
 }
 
 func shutdown(context *glsp.Context) error {
+	log.Info("Shutdown.")
 	protocol.SetTraceValue(protocol.TraceValueOff)
 	return nil
 }

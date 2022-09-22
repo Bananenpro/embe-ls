@@ -8,7 +8,8 @@ import (
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
-	"github.com/tliron/kutil/logging"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 type Document struct {
@@ -30,6 +31,8 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 	d.changed = false
+
+	log.Trace("Validating document...")
 
 	defer d.sendDiagnostics(notify)
 
@@ -56,7 +59,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 				Message:  e.Message,
 			})
 		} else {
-			logging.GetLogger(name).Errorf("Failed to scan '%s': %s", d.uri, err)
+			log.Error("Failed to scan '%s': %s", d.uri, err)
 		}
 		return
 	}
@@ -81,7 +84,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 					Message:  e.Message,
 				})
 			} else {
-				logging.GetLogger(name).Errorf("Failed to parse '%s': %s", d.uri, err)
+				log.Error("Failed to parse '%s': %s", d.uri, err)
 			}
 		}
 		return
@@ -105,7 +108,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 				Message:  w.Message,
 			})
 		} else {
-			logging.GetLogger(name).Errorf("Failed to generate blocks for '%s': %s", d.uri, err)
+			log.Error("Failed to generate blocks for '%s': %s", d.uri, err)
 		}
 	}
 	if len(result.Errors) > 0 {
@@ -126,7 +129,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 					Message:  e.Message,
 				})
 			} else {
-				logging.GetLogger(name).Errorf("Failed to generate blocks for '%s': %s", d.uri, err)
+				log.Error("Failed to generate blocks for '%s': %s", d.uri, err)
 			}
 		}
 		return
@@ -138,6 +141,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
+	log.Trace("Sending diagnostics...")
 	notify(protocol.ServerTextDocumentPublishDiagnostics, &protocol.PublishDiagnosticsParams{
 		URI:         d.uri,
 		Diagnostics: d.diagnostics,
@@ -145,6 +149,7 @@ func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
 }
 
 func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocumentParams) error {
+	log.Trace("Document did open: %s", params.TextDocument.URI)
 	document := &Document{
 		uri:         params.TextDocument.URI,
 		content:     params.TextDocument.Text,
@@ -163,13 +168,16 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 
 func textDocumentDidChange(context *glsp.Context, params *protocol.DidChangeTextDocumentParams) error {
 	if document, ok := getDocument(params.TextDocument.URI); ok {
+		log.Trace("Document did change: %s", document.uri)
 		content := document.content
 		for _, change := range params.ContentChanges {
 			if c, ok := change.(protocol.TextDocumentContentChangeEvent); ok {
 				start, end := c.Range.IndexesIn(content)
 				content = content[:start] + c.Text + content[end:]
+				log.Trace("Applied change type 'partial'.")
 			} else if c, ok := change.(protocol.TextDocumentContentChangeEventWhole); ok {
 				content = c.Text
+				log.Trace("Applied change type 'whole'.")
 			}
 		}
 		document.content = content
@@ -180,6 +188,7 @@ func textDocumentDidChange(context *glsp.Context, params *protocol.DidChangeText
 }
 
 func textDocumentDidClose(context *glsp.Context, params *protocol.DidCloseTextDocumentParams) error {
+	log.Trace("Document did close: %s", params.TextDocument.URI)
 	_, ok := documents.LoadAndDelete(params.TextDocument.URI)
 	if ok {
 		go context.Notify(protocol.ServerTextDocumentPublishDiagnostics, &protocol.PublishDiagnosticsParams{

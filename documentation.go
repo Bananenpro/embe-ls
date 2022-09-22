@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
 )
 
 //go:embed documentation.md
@@ -21,6 +23,7 @@ func getDocs(identifier string) any {
 			Value: docs,
 		}
 	}
+	log.Warn("Docs not available for: %s", identifier)
 	return nil
 }
 
