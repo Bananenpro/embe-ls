@@ -280,8 +280,13 @@ Move the robot a specific distance backwards.
 
 `distance`: centimeter
 ---
-motors.turn
-Turn the robot a specific angle.
+motors.turnLeft
+Turn the robot to the left.
+
+`angle`: degrees
+---
+motors.turnRight
+Turn the robot to the right.
 
 `angle`: degrees
 ---
