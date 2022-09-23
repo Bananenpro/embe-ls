@@ -23,7 +23,11 @@ var handler protocol.Handler
 
 func main() {
 	log.Info("Starting %s v%s...", name, version)
-	logging.Configure(2, config.GLSPLogFile)
+	glspLogLevel := 0
+	if config.GLSPLogFile != nil {
+		glspLogLevel = 2
+	}
+	logging.Configure(glspLogLevel, config.GLSPLogFile)
 
 	handler = protocol.Handler{
 		Initialize:                    initialize,
