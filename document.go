@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"strings"
 	"sync"
 
 	"github.com/Bananenpro/embe/generator"
@@ -31,6 +32,10 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 	d.changed = false
+
+	if !strings.HasSuffix(d.content, "\n") {
+		d.content += "\n"
+	}
 
 	log.Trace("Validating document...")
 
