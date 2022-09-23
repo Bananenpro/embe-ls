@@ -16,9 +16,9 @@ var snippets = map[string]string{
 	"if statement":      "if ${1:condition}:\n  $0",
 	"while loop":        "while ${1:condition}:\n  $0",
 	"for loop":          "for ${1:count}:\n  $0",
-	"var declaration":   "var ${1:name}: ${2:type} = ${3:value}",
-	"const declaration": "const ${1:name}: ${2:type} = ${3:value}",
-	"func declaration":  "func ${1:name}(${2:parameters}):\n  $0",
+	"var declaration":   "var ${1:name} = ${2:value}",
+	"const declaration": "const ${1:name} = ${2:value}",
+	"func declaration":  "func ${1:name}($2):\n  $0",
 }
 
 var keywords = []string{
