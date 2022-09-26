@@ -303,6 +303,14 @@ Turn a single motor by an angle.
 
 `angle`: degrees
 ---
+motors.driveRPM
+Set the speed of the two encoder motors.
+---
+motors.drivePower
+Set the power of the two encoder motors.
+
+Values: 0-100
+---
 motors.stop
 Stop a motor.
 ---
