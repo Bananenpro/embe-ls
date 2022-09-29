@@ -39,17 +39,17 @@ This event is triggered when the robot is falling.
 This event is triggered when the robot is shaken.
 ---
 @light
-This event is triggered when brightness of the environment fulfills the specified condition.
+This event is triggered when the brightness of the environment fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
 @sound
-This event is triggered when loudness of the environment fulfills the specified condition.
+This event is triggered when the loudness of the environment fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
 @shakeval
-This event is triggered when strength with which the robot is shaken fulfills the specified condition.
+This event is triggered when the strength with which the robot is shaken fulfills the specified condition.
 
 Example conditions: `>50`, `<3`
 ---
