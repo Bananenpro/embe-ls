@@ -1,5 +1,5 @@
 // events
-@start
+@launch
 This event is triggered when the script is loaded.
 ---
 @button
