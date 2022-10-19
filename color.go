@@ -76,12 +76,12 @@ func textDocumentColor(context *glsp.Context, params *protocol.DocumentColorPara
 			colorInformation = append(colorInformation, protocol.ColorInformation{
 				Range: protocol.Range{
 					Start: protocol.Position{
-						Line:      uint32(t.Line),
-						Character: uint32(t.Column),
+						Line:      uint32(t.Pos.Line),
+						Character: uint32(t.Pos.Column),
 					},
 					End: protocol.Position{
-						Line:      uint32(t.Line),
-						Character: uint32(t.Column + len(t.Lexeme)),
+						Line:      uint32(t.Pos.Line),
+						Character: uint32(t.Pos.Column + len(t.Lexeme)),
 					},
 				},
 				Color: protocol.Color{
@@ -103,12 +103,12 @@ func textDocumentColor(context *glsp.Context, params *protocol.DocumentColorPara
 		colorInformation = append(colorInformation, protocol.ColorInformation{
 			Range: protocol.Range{
 				Start: protocol.Position{
-					Line:      uint32(t.Line),
-					Character: uint32(t.Column),
+					Line:      uint32(t.Pos.Line),
+					Character: uint32(t.Pos.Column),
 				},
 				End: protocol.Position{
-					Line:      uint32(t.Line),
-					Character: uint32(t.Column + len(t.Lexeme)),
+					Line:      uint32(t.Pos.Line),
+					Character: uint32(t.Pos.Column + len(t.Lexeme)),
 				},
 			},
 			Color: protocol.Color{

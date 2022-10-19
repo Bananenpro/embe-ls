@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Bananenpro/embe/generator"
+	"github.com/Bananenpro/embe/analyzer"
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
@@ -46,7 +46,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 		if i == 0 {
 			continue
 		}
-		if t.Line == int(params.Position.Line) && t.Column == parenIndices[len(parenIndices)-1] {
+		if t.Pos.Line == int(params.Position.Line) && t.Pos.Column == parenIndices[len(parenIndices)-1] {
 			identifier = document.tokens[i-1]
 			identifierIndex = i
 			break
@@ -58,20 +58,20 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 		return nil, nil
 	}
 
-	var signatures []generator.Signature
-	if f, ok := generator.ExprFuncCalls[identifier.Lexeme]; ok {
+	var signatures []analyzer.Signature
+	if f, ok := analyzer.ExprFuncCalls[identifier.Lexeme]; ok {
 		signatures = f.Signatures
-	} else if f, ok := generator.FuncCalls[identifier.Lexeme]; ok {
+	} else if f, ok := analyzer.FuncCalls[identifier.Lexeme]; ok {
 		signatures = f.Signatures
 	} else if f, ok := document.functions[identifier.Lexeme]; ok {
-		params := make([]generator.Param, 0)
+		params := make([]analyzer.Param, 0)
 		for _, p := range f.Params {
-			params = append(params, generator.Param{
+			params = append(params, analyzer.Param{
 				Name: p.Name.Lexeme,
 				Type: p.Type.DataType,
 			})
 		}
-		signatures = []generator.Signature{
+		signatures = []analyzer.Signature{
 			{
 				FuncName: f.Name.Lexeme,
 				Params:   params,
@@ -94,7 +94,7 @@ func textDocumentSignatureHelp(context *glsp.Context, params *protocol.Signature
 			parens--
 		case parser.TkComma:
 			paramCount++
-			if token.Line == int(pos.Line) && token.Column <= int(pos.Character) {
+			if token.Pos.Line == int(pos.Line) && token.Pos.Column <= int(pos.Character) {
 				paramIndex++
 			}
 		}

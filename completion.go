@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Bananenpro/embe/generator"
+	"github.com/Bananenpro/embe/analyzer"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
 
@@ -59,7 +59,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	eventCompletionType := protocol.CompletionItemKindEvent
-	for _, e := range generator.Events {
+	for _, e := range analyzer.Events {
 		if strings.HasPrefix("@"+e.Name, item) {
 			detail := e.String()
 			completions = append(completions, protocol.CompletionItem{
@@ -98,7 +98,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	funcCompletionType := protocol.CompletionItemKindFunction
-	for _, f := range generator.FuncCalls {
+	for _, f := range analyzer.FuncCalls {
 		if strings.HasPrefix(f.Name, item) {
 			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{
@@ -127,7 +127,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	for _, f := range d.functions {
-		if f.Name.Line < line && strings.HasPrefix(f.Name.Lexeme, item) {
+		if f.Name.Pos.Line < line && strings.HasPrefix(f.Name.Lexeme, item) {
 			if _, ok := parameters[f.Name.Lexeme]; ok {
 				continue
 			}
@@ -148,7 +148,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	for _, v := range d.variables {
-		if v.Name.Line < line && strings.HasPrefix(v.Name.Lexeme, item) {
+		if v.Name.Pos.Line < line && strings.HasPrefix(v.Name.Lexeme, item) {
 			if _, ok := parameters[v.Name.Lexeme]; ok {
 				continue
 			}
@@ -162,7 +162,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 	}
 
 	for _, l := range d.lists {
-		if l.Name.Line < line && strings.HasPrefix(l.Name.Lexeme, item) {
+		if l.Name.Pos.Line < line && strings.HasPrefix(l.Name.Lexeme, item) {
 			if _, ok := parameters[l.Name.Lexeme]; ok {
 				continue
 			}
@@ -177,11 +177,11 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 
 	constCompletionType := protocol.CompletionItemKindConstant
 	for _, c := range d.constants {
-		if c.Name.Line < line && strings.HasPrefix(c.Name.Lexeme, item) {
+		if c.Name.Pos.Line < line && strings.HasPrefix(c.Name.Lexeme, item) {
 			if _, ok := parameters[c.Name.Lexeme]; ok {
 				continue
 			}
-			detail := fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Value.DataType, c.Value.Lexeme)
+			detail := fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, toString(c.Value))
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(c.Name.Lexeme, base),
 				Kind:   &constCompletionType,
@@ -190,7 +190,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
-	for _, v := range generator.Variables {
+	for _, v := range analyzer.Variables {
 		if strings.HasPrefix(v.Name, item) {
 			detail := v.String()
 			completions = append(completions, protocol.CompletionItem{
@@ -202,7 +202,7 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
-	for _, f := range generator.ExprFuncCalls {
+	for _, f := range analyzer.ExprFuncCalls {
 		if strings.HasPrefix(f.Name, item) {
 			detail := "func " + f.Signatures[0].String()
 			completions = append(completions, protocol.CompletionItem{

@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Bananenpro/embe/analyzer"
 	"github.com/Bananenpro/embe/generator"
 	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
@@ -19,10 +20,10 @@ type Document struct {
 	tokens      []parser.Token
 	changed     bool
 	diagnostics []protocol.Diagnostic
-	variables   map[string]*generator.Variable
-	lists       map[string]*generator.List
-	constants   map[string]*generator.Constant
-	functions   map[string]*generator.Function
+	variables   map[string]*analyzer.Variable
+	lists       map[string]*analyzer.List
+	constants   map[string]*analyzer.Constant
+	functions   map[string]*analyzer.Function
 }
 
 var documents sync.Map
@@ -46,43 +47,45 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 
 	d.diagnostics = d.diagnostics[:0]
 
-	tokens, lines, err := parser.Scan(bytes.NewBufferString(d.content))
-	if err != nil {
-		if e, ok := err.(parser.ScanError); ok {
-			d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
-				Range: protocol.Range{
-					Start: protocol.Position{
-						Line:      uint32(e.Line),
-						Character: uint32(e.Column),
+	tokens, _, errs := parser.Scan(bytes.NewBufferString(d.content))
+	if len(errs) > 0 {
+		for _, err := range errs {
+			if e, ok := err.(parser.ScanError); ok {
+				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
+					Range: protocol.Range{
+						Start: protocol.Position{
+							Line:      uint32(e.Pos.Line),
+							Character: uint32(e.Pos.Column),
+						},
+						End: protocol.Position{
+							Line:      uint32(e.Pos.Line),
+							Character: uint32(e.Pos.Column + 1),
+						},
 					},
-					End: protocol.Position{
-						Line:      uint32(e.Line),
-						Character: uint32(e.Column + 1),
-					},
-				},
-				Severity: &severityError,
-				Message:  e.Message,
-			})
-		} else {
-			log.Error("Failed to scan '%s': %s", d.uri, err)
+					Severity: &severityError,
+					Message:  e.Message,
+				})
+			} else {
+				log.Error("Failed to scan '%s': %s", d.uri, err)
+			}
 		}
 		return
 	}
 	d.tokens = tokens
 
-	statements, errs := parser.Parse(tokens, lines)
+	statements, errs := parser.Parse(tokens)
 	if len(errs) > 0 {
 		for _, err := range errs {
 			if e, ok := err.(parser.ParseError); ok {
 				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
 					Range: protocol.Range{
 						Start: protocol.Position{
-							Line:      uint32(e.Token.Line),
-							Character: uint32(e.Token.Column),
+							Line:      uint32(e.Token.Pos.Line),
+							Character: uint32(e.Token.Pos.Column),
 						},
 						End: protocol.Position{
-							Line:      uint32(e.Token.Line),
-							Character: uint32(e.Token.Column + len(e.Token.Lexeme)),
+							Line:      uint32(e.Token.Pos.Line),
+							Character: uint32(e.Token.Pos.Column + len(e.Token.Lexeme)),
 						},
 					},
 					Severity: &severityError,
@@ -95,39 +98,66 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 
-	result := generator.GenerateBlocks(statements, lines)
-	for _, warning := range result.Warnings {
-		if w, ok := warning.(generator.GenerateError); ok {
+	statements, analyzerResult := analyzer.Analyze(statements)
+	for _, warning := range analyzerResult.Warnings {
+		if w, ok := warning.(analyzer.AnalyzerError); ok {
 			d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
 				Range: protocol.Range{
 					Start: protocol.Position{
-						Line:      uint32(w.Token.Line),
-						Character: uint32(w.Token.Column),
+						Line:      uint32(w.Start.Line),
+						Character: uint32(w.Start.Column),
 					},
 					End: protocol.Position{
-						Line:      uint32(w.Token.Line),
-						Character: uint32(w.Token.Column + len(w.Token.Lexeme)),
+						Line:      uint32(w.End.Line),
+						Character: uint32(w.End.Column + 1),
 					},
 				},
 				Severity: &severityWarning,
 				Message:  w.Message,
 			})
-		} else {
-			log.Error("Failed to generate blocks for '%s': %s", d.uri, err)
 		}
 	}
-	if len(result.Errors) > 0 {
-		for _, err := range result.Errors {
+	if len(analyzerResult.Errors) > 0 {
+		for _, err := range analyzerResult.Errors {
+			if e, ok := err.(analyzer.AnalyzerError); ok {
+				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
+					Range: protocol.Range{
+						Start: protocol.Position{
+							Line:      uint32(e.Start.Line),
+							Character: uint32(e.Start.Column),
+						},
+						End: protocol.Position{
+							Line:      uint32(e.End.Line),
+							Character: uint32(e.End.Column + 1),
+						},
+					},
+					Severity: &severityError,
+					Message:  e.Message,
+				})
+			} else {
+				log.Error("Failed to parse '%s': %s", d.uri, err)
+			}
+		}
+		return
+	}
+	d.variables = analyzerResult.Definitions.Variables
+	d.lists = analyzerResult.Definitions.Lists
+	d.constants = analyzerResult.Definitions.Constants
+	d.functions = analyzerResult.Definitions.Functions
+
+	_, errs = generator.GenerateBlocks(statements, analyzerResult.Definitions)
+	if len(errs) > 0 {
+		for _, err := range errs {
 			if e, ok := err.(generator.GenerateError); ok {
 				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
 					Range: protocol.Range{
 						Start: protocol.Position{
-							Line:      uint32(e.Token.Line),
-							Character: uint32(e.Token.Column),
+							Line:      uint32(e.Start.Line),
+							Character: uint32(e.Start.Column),
 						},
 						End: protocol.Position{
-							Line:      uint32(e.Token.Line),
-							Character: uint32(e.Token.Column + len(e.Token.Lexeme)),
+							Line:      uint32(e.End.Line),
+							Character: uint32(e.End.Column + 1),
 						},
 					},
 					Severity: &severityError,
@@ -139,10 +169,6 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		}
 		return
 	}
-	d.variables = result.Variables
-	d.lists = result.Lists
-	d.constants = result.Constants
-	d.functions = result.Functions
 }
 
 func (d *Document) sendDiagnostics(notify glsp.NotifyFunc) {
@@ -161,10 +187,10 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		tokens:      make([]parser.Token, 0),
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
-		variables:   make(map[string]*generator.Variable),
-		lists:       make(map[string]*generator.List),
-		constants:   make(map[string]*generator.Constant),
-		functions:   make(map[string]*generator.Function),
+		variables:   make(map[string]*analyzer.Variable),
+		lists:       make(map[string]*analyzer.List),
+		constants:   make(map[string]*analyzer.Constant),
+		functions:   make(map[string]*analyzer.Function),
 	}
 	documents.Store(params.TextDocument.URI, document)
 	go document.validate(context.Notify)
