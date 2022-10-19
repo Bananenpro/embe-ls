@@ -26,7 +26,7 @@ var keywords = []string{
 }
 
 var types = []string{
-	"number", "string", "boolean",
+	"number", "string", "boolean", "image",
 }
 
 var completionSplitRegex = regexp.MustCompile(`[ (<>,!|&+\-\*/%=]`)
