@@ -234,6 +234,96 @@ Orientations: `-90`, `0`, `90`, `180`
 display.clear
 Clear the display.
 ---
+display.setBackgroundColor
+Set the background color of the screen.
+---
+display.render
+Refresh the screen and show sprite changes.
+---
+sprite.fromIcon
+Set the sprite to the icon.
+
+Icons: `Music`, `Image`, `Video`, `Clock`, `Play`, `Pause`, `Next`, `Prev`, `Sound`, `Temperature`, `Light`, `Motion`, `Home`, `Gear`, `List`, `Right`, `Wrong`, `Shut_down`, `Refresh`, `Trash_can`, `Download`, `Cloudy`, `Rain`, `Snow`, `Train`, `Rocket`, `Truck`, `Car`, `Droplet`, `Distance`, `Fire`, `Magnetic`, `Gas`, `Vision`, `Color`, `Overcast`, `Sandstorm`, `Foggy`
+---
+sprite.fromText
+Set the sprite to the text.
+---
+sprite.fromQR
+Set the sprite to a QR code pointing to `url`.
+---
+sprite.flipH
+Flip the sprite horizontally.
+---
+sprite.flipV
+Flip the sprite vertically.
+---
+sprite.delete
+Delete the sprite.
+---
+sprite.setAnchor
+Set the anchor of the sprite.
+
+Anchors: `top_left`, `top_mid`, `top_right`, `mid_left`, `center`, `mid_right`, `bottom_left`, `bottom_mid`, `bottom_right`
+---
+sprite.moveLeft
+Move the sprite to the left.
+---
+sprite.moveRight
+Move the sprite to the right.
+---
+sprite.moveUp
+Move the sprite up.
+---
+sprite.moveDown
+Move the sprite up.
+---
+sprite.moveTo
+Move the sprite to the coordinates.
+---
+sprite.moveRandom
+Move the sprite to a random position on the screen.
+---
+sprite.rotate
+Rotate the sprite by `angle`.
+
+`angle`: degrees
+---
+sprite.rotateTo
+Set the rotation of the sprite to `angle`.
+
+`angle`: degrees
+---
+sprite.setScale
+Set the scale of the sprite.
+
+Default: 100
+---
+sprite.setColor
+Set the tint of the sprite.
+
+Default: #ffffff
+---
+sprite.resetColor
+Reset the tint of the sprite to the default.
+---
+sprite.show
+Make the sprite visible.
+---
+sprite.hide
+Make the sprite invisible.
+---
+sprite.toFront
+Move the sprite to highest layer.
+---
+sprite.toBack
+Move the sprite to the lowest layer.
+---
+sprite.layerUp
+Move the sprite one layer up.
+---
+sprite.layerDown
+Move the sprite one layer down.
+---
 net.broadcast
 Broadcast a message over LAN.
 ---
@@ -259,6 +349,14 @@ Reset the yaw angle sensor.
 ---
 sensors.defineColor
 Define a custom color to use for the color sensor.
+---
+sensors.calibrateColors
+Calibrate the color sensor.
+---
+sensors.enhancedColorDetection
+Enable or disable the enhanced color detection algorithm.
+
+Default: off
 ---
 motors.run
 Run the motors with a specific RPM.
@@ -545,3 +643,29 @@ Get the number of items in the list.
 ---
 lists.contains
 Check whether the list contains `value`.
+---
+display.pixelIsColor
+Check whether the color of the pixel matches `r`, `g`, `b`.
+---
+sprite.touchesSprite
+Check whether the two sprites touch each other.
+---
+sprite.touchesEdge
+Check whether the sprite is on the edge.
+---
+sprite.positionX
+The x coordinate of the sprite.
+---
+sprite.positionY
+The y coordinate of the sprite.
+---
+sprite.rotation
+The rotation of the sprite.
+---
+sprite.scale
+The scale of the sprite.
+---
+sprite.anchor
+The anchor of the sprite.
+
+Anchors: `top_left`, `top_mid`, `top_right`, `mid_left`, `center`, `mid_right`, `bottom_left`, `bottom_mid`, `bottom_right`
