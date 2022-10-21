@@ -73,7 +73,8 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		}
 		return
 	}
-	d.tokens = tokens
+	d.tokens = make([]parser.Token, len(tokens))
+	copy(d.tokens, tokens)
 
 	tokens, defines, errs := parser.Preprocess(tokens)
 	if len(errs) > 0 {
