@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Bananenpro/embe/analyzer"
+	"github.com/Bananenpro/embe/parser"
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
 
@@ -13,16 +14,22 @@ import (
 )
 
 var snippets = map[string]string{
-	"if statement":      "if ${1:condition}:\n  $0",
-	"while loop":        "while ${1:condition}:\n  $0",
-	"for loop":          "for ${1:count}:\n  $0",
-	"var declaration":   "var ${1:name} = ${2:value}",
-	"const declaration": "const ${1:name} = ${2:value}",
-	"func declaration":  "func ${1:name}($2):\n  $0",
+	"if statement":       "if ${1:condition}:\n  $0",
+	"while loop":         "while ${1:condition}:\n  $0",
+	"for loop":           "for ${1:count}:\n  $0",
+	"var declaration":    "var ${1:name} = ${2:value}",
+	"const declaration":  "const ${1:name} = ${2:value}",
+	"func declaration":   "func ${1:name}($2):\n  $0",
+	"event declaration":  "event ${1:name}",
+	"#define NAME":       "#define ${1:NAME}",
+	"#undef NAME":        "#undef ${1:NAME}",
+	"#define NAME VALUE": "#define ${1:NAME} ${2:value}",
+	"#ifdef NAME":        "#ifdef ${1:NAME}\n  $0\n#endif",
+	"#ifndef NAME":       "#ifndef ${1:NAME}\n  $0\n#endif",
 }
 
 var keywords = []string{
-	"if", "elif", "else", "while", "for", "var",
+	"if", "elif", "else", "while", "for", "var", "event", "#define", "#undef", "#ifdef", "#ifndef", "#endif",
 }
 
 var types = []string{
@@ -67,6 +74,16 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 				Kind:          &eventCompletionType,
 				Detail:        &detail,
 				Documentation: getDocs("@" + e.Name),
+			})
+		}
+	}
+	for _, e := range d.events {
+		if e.Name.Pos.Line < line && strings.HasPrefix("@"+e.Name.Lexeme, item) {
+			detail := fmt.Sprintf("event %s", e.Name.Lexeme)
+			completions = append(completions, protocol.CompletionItem{
+				Label:  e.Name.Lexeme,
+				Kind:   &eventCompletionType,
+				Detail: &detail,
 			})
 		}
 	}
@@ -147,6 +164,20 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
+	for _, e := range d.events {
+		if e.Name.Pos.Line < line && strings.HasPrefix(e.Name.Lexeme, item) {
+			if _, ok := parameters[e.Name.Lexeme]; ok {
+				continue
+			}
+			detail := "event " + e.Name.Lexeme
+			completions = append(completions, protocol.CompletionItem{
+				Label:  strings.TrimPrefix(e.Name.Lexeme, base),
+				Kind:   &funcCompletionType,
+				Detail: &detail,
+			})
+		}
+	}
+
 	for _, v := range d.variables {
 		if v.Name.Pos.Line < line && strings.HasPrefix(v.Name.Lexeme, item) {
 			if _, ok := parameters[v.Name.Lexeme]; ok {
@@ -184,6 +215,17 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 			detail := fmt.Sprintf("const %s: %s = %s", c.Name.Lexeme, c.Type, toString(c.Value))
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(c.Name.Lexeme, base),
+				Kind:   &constCompletionType,
+				Detail: &detail,
+			})
+		}
+	}
+
+	for _, d := range d.defines {
+		if (d.Start.Line < line && (d.End == (parser.Position{}) || d.End.Line > line)) && strings.HasPrefix(d.Name.Lexeme, item) {
+			detail := fmt.Sprintf("#define %s", d.Name.Lexeme)
+			completions = append(completions, protocol.CompletionItem{
+				Label:  strings.TrimPrefix(d.Name.Lexeme, base),
 				Kind:   &constCompletionType,
 				Detail: &detail,
 			})

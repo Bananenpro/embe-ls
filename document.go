@@ -20,10 +20,12 @@ type Document struct {
 	tokens      []parser.Token
 	changed     bool
 	diagnostics []protocol.Diagnostic
+	defines     map[string]*parser.Define
 	variables   map[string]*analyzer.Variable
 	lists       map[string]*analyzer.List
 	constants   map[string]*analyzer.Constant
 	functions   map[string]*analyzer.Function
+	events      map[string]*analyzer.CustomEvent
 }
 
 var documents sync.Map
@@ -72,6 +74,32 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 		return
 	}
 	d.tokens = tokens
+
+	tokens, defines, errs := parser.Preprocess(tokens)
+	if len(errs) > 0 {
+		for _, err := range errs {
+			if e, ok := err.(parser.ParseError); ok {
+				d.diagnostics = append(d.diagnostics, protocol.Diagnostic{
+					Range: protocol.Range{
+						Start: protocol.Position{
+							Line:      uint32(e.Token.Pos.Line),
+							Character: uint32(e.Token.Pos.Column),
+						},
+						End: protocol.Position{
+							Line:      uint32(e.Token.Pos.Line),
+							Character: uint32(e.Token.Pos.Column + len(e.Token.Lexeme)),
+						},
+					},
+					Severity: &severityError,
+					Message:  e.Message,
+				})
+			} else {
+				log.Error("Failed to preprocess '%s': %s", d.uri, err)
+			}
+		}
+		return
+	}
+	d.defines = defines
 
 	statements, errs := parser.Parse(tokens)
 	if len(errs) > 0 {
@@ -144,6 +172,7 @@ func (d *Document) validate(notify glsp.NotifyFunc) {
 	d.lists = analyzerResult.Definitions.Lists
 	d.constants = analyzerResult.Definitions.Constants
 	d.functions = analyzerResult.Definitions.Functions
+	d.events = analyzerResult.Definitions.Events
 
 	_, errs = generator.GenerateBlocks(statements, analyzerResult.Definitions)
 	if len(errs) > 0 {
@@ -187,10 +216,12 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		tokens:      make([]parser.Token, 0),
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
+		defines:     make(map[string]*parser.Define),
 		variables:   make(map[string]*analyzer.Variable),
 		lists:       make(map[string]*analyzer.List),
 		constants:   make(map[string]*analyzer.Constant),
 		functions:   make(map[string]*analyzer.Function),
+		events:      make(map[string]*analyzer.CustomEvent),
 	}
 	documents.Store(params.TextDocument.URI, document)
 	go document.validate(context.Notify)

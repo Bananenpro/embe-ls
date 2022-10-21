@@ -155,6 +155,9 @@ Stop recording.
 audio.record.play
 Play the recording.
 ---
+lights.deactivate
+Deactivate all lights of the robot.
+---
 lights.back.playAnimation
 Play a light animation.
 

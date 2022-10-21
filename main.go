@@ -80,7 +80,7 @@ func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, 
 	capabilities := handler.CreateServerCapabilities()
 	capabilities.TextDocumentSync = protocol.TextDocumentSyncKindIncremental
 	capabilities.CompletionProvider = &protocol.CompletionOptions{
-		TriggerCharacters: []string{"@", "."},
+		TriggerCharacters: []string{"@", "#", "."},
 	}
 	capabilities.SignatureHelpProvider = &protocol.SignatureHelpOptions{
 		TriggerCharacters: []string{"(", ","},

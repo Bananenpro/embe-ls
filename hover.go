@@ -85,6 +85,10 @@ functions:
 				signature += p.Name.Lexeme + ": " + string(p.Type.DataType)
 			}
 			signature += ")"
+		} else if d, ok := document.defines[token.Lexeme]; ok {
+			signature = fmt.Sprintf("define %s", d.Name.Lexeme)
+		} else if ce, ok := document.events[token.Lexeme]; ok {
+			signature = fmt.Sprintf("event %s", ce.Name.Lexeme)
 		}
 	}
 
