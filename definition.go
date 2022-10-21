@@ -45,7 +45,7 @@ func textDocumentDefinition(context *glsp.Context, params *protocol.DefinitionPa
 	} else if c, ok := document.constants[identifierName]; ok {
 		start = c.Name.Pos
 		end = c.Name.EndPos
-	} else if d, ok := document.defines[identifierName]; ok {
+	} else if d, ok := document.defines.GetDefine(identifierName, token.Pos); ok {
 		start = d.Name.Pos
 		end = d.Name.EndPos
 	} else {

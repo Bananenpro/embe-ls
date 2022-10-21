@@ -221,9 +221,9 @@ func (d *Document) getCompletions(item string, line int) []protocol.CompletionIt
 		}
 	}
 
-	for _, d := range d.defines {
-		if (d.Start.Line < line && (d.End == (parser.Position{}) || d.End.Line > line)) && strings.HasPrefix(d.Name.Lexeme, item) {
-			detail := fmt.Sprintf("#define %s", d.Name.Lexeme)
+	for _, d := range d.defines.GetDefines(parser.Position{Line: line}) {
+		if strings.HasPrefix(d.Name.Lexeme, item) {
+			detail := d.String()
 			completions = append(completions, protocol.CompletionItem{
 				Label:  strings.TrimPrefix(d.Name.Lexeme, base),
 				Kind:   &constCompletionType,

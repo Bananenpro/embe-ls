@@ -20,7 +20,7 @@ type Document struct {
 	tokens      []parser.Token
 	changed     bool
 	diagnostics []protocol.Diagnostic
-	defines     map[string]*parser.Define
+	defines     *parser.Defines
 	variables   map[string]*analyzer.Variable
 	lists       map[string]*analyzer.List
 	constants   map[string]*analyzer.Constant
@@ -217,7 +217,7 @@ func textDocumentDidOpen(context *glsp.Context, params *protocol.DidOpenTextDocu
 		tokens:      make([]parser.Token, 0),
 		changed:     true,
 		diagnostics: make([]protocol.Diagnostic, 0),
-		defines:     make(map[string]*parser.Define),
+		defines:     parser.NewDefines(),
 		variables:   make(map[string]*analyzer.Variable),
 		lists:       make(map[string]*analyzer.List),
 		constants:   make(map[string]*analyzer.Constant),
