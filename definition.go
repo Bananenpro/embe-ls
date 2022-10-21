@@ -1,0 +1,68 @@
+package main
+
+import (
+	"github.com/Bananenpro/embe/parser"
+	"github.com/tliron/glsp"
+	protocol "github.com/tliron/glsp/protocol_3_16"
+
+	"github.com/Bananenpro/embe-ls/log"
+)
+
+func textDocumentDefinition(context *glsp.Context, params *protocol.DefinitionParams) (any, error) {
+	document, ok := getDocument(params.TextDocument.URI)
+	if !ok {
+		return nil, nil
+	}
+
+	var token parser.Token
+	for _, t := range document.tokens {
+		if t.Pos.Line == int(params.Position.Line) && int(params.Position.Character) >= t.Pos.Column && int(params.Position.Character) <= t.Pos.Column+len(t.Lexeme) {
+			token = t
+			break
+		}
+	}
+	if token.Type != parser.TkIdentifier {
+		log.Warn("Goto definition on non identifier at %v.", params.Position)
+		return nil, nil
+	}
+	log.Trace("Goto definition at position: %v; token: %v", params.Position, token)
+	identifierName := token.Lexeme
+
+	var start parser.Position
+	var end parser.Position
+	if e, ok := document.events[identifierName]; ok {
+		start = e.Name.Pos
+		end = e.Name.EndPos
+	} else if f, ok := document.functions[identifierName]; ok {
+		start = f.Name.Pos
+		end = f.Name.EndPos
+	} else if v, ok := document.variables[identifierName]; ok {
+		start = v.Name.Pos
+		end = v.Name.EndPos
+	} else if l, ok := document.lists[identifierName]; ok {
+		start = l.Name.Pos
+		end = l.Name.EndPos
+	} else if c, ok := document.constants[identifierName]; ok {
+		start = c.Name.Pos
+		end = c.Name.EndPos
+	} else if d, ok := document.defines[identifierName]; ok {
+		start = d.Name.Pos
+		end = d.Name.EndPos
+	} else {
+		return nil, nil
+	}
+
+	return &protocol.Location{
+		URI: document.uri,
+		Range: protocol.Range{
+			Start: protocol.Position{
+				Line:      uint32(start.Line),
+				Character: uint32(start.Column),
+			},
+			End: protocol.Position{
+				Line:      uint32(end.Line),
+				Character: uint32(end.Column),
+			},
+		},
+	}, nil
+}

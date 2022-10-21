@@ -42,6 +42,7 @@ func main() {
 		TextDocumentHover:             textDocumentHover,
 		TextDocumentColor:             textDocumentColor,
 		TextDocumentColorPresentation: textDocumentColorPresentation,
+		TextDocumentDefinition:        textDocumentDefinition,
 	}
 
 	var protocol string
