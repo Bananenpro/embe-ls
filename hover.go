@@ -20,7 +20,7 @@ func textDocumentHover(context *glsp.Context, params *protocol.HoverParams) (*pr
 	var token parser.Token
 	var tokenIndex int
 	for i, t := range document.tokens {
-		if t.Pos.Line == int(params.Position.Line) && int(params.Position.Character) >= t.Pos.Column && int(params.Position.Character) <= t.Pos.Column+len(t.Lexeme) {
+		if t.Pos.Line == int(params.Position.Line) && int(params.Position.Character) >= t.Pos.Column-1 && int(params.Position.Character) <= t.Pos.Column+len(t.Lexeme)-1 {
 			token = t
 			tokenIndex = i
 			break

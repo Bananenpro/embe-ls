@@ -16,7 +16,7 @@ func textDocumentDefinition(context *glsp.Context, params *protocol.DefinitionPa
 
 	var token parser.Token
 	for _, t := range document.tokens {
-		if t.Pos.Line == int(params.Position.Line) && int(params.Position.Character) >= t.Pos.Column && int(params.Position.Character) <= t.Pos.Column+len(t.Lexeme) {
+		if t.Pos.Line == int(params.Position.Line) && int(params.Position.Character) >= t.Pos.Column-1 && int(params.Position.Character) <= t.Pos.Column+len(t.Lexeme)-1 {
 			token = t
 			break
 		}
