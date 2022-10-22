@@ -30,26 +30,42 @@ func textDocumentDefinition(context *glsp.Context, params *protocol.DefinitionPa
 
 	var start parser.Position
 	var end parser.Position
-	if e, ok := document.events[identifierName]; ok {
-		start = e.Name.Pos
-		end = e.Name.EndPos
-	} else if f, ok := document.functions[identifierName]; ok {
-		start = f.Name.Pos
-		end = f.Name.EndPos
-	} else if v, ok := document.variables[identifierName]; ok {
-		start = v.Name.Pos
-		end = v.Name.EndPos
-	} else if l, ok := document.lists[identifierName]; ok {
-		start = l.Name.Pos
-		end = l.Name.EndPos
-	} else if c, ok := document.constants[identifierName]; ok {
-		start = c.Name.Pos
-		end = c.Name.EndPos
-	} else if d, ok := document.defines.GetDefine(identifierName, token.Pos); ok {
-		start = d.Name.Pos
-		end = d.Name.EndPos
-	} else {
-		return nil, nil
+
+functions:
+	for _, f := range document.functions {
+		if int(params.Position.Line) >= f.StartLine && int(params.Position.Line) <= f.EndLine {
+			for _, p := range f.Params {
+				if p.Name.Lexeme == identifierName {
+					start = p.Name.Pos
+					end = p.Name.EndPos
+					break functions
+				}
+			}
+		}
+	}
+
+	if start == (parser.Position{}) || end == (parser.Position{}) {
+		if e, ok := document.events[identifierName]; ok {
+			start = e.Name.Pos
+			end = e.Name.EndPos
+		} else if f, ok := document.functions[identifierName]; ok {
+			start = f.Name.Pos
+			end = f.Name.EndPos
+		} else if v, ok := document.variables[identifierName]; ok {
+			start = v.Name.Pos
+			end = v.Name.EndPos
+		} else if l, ok := document.lists[identifierName]; ok {
+			start = l.Name.Pos
+			end = l.Name.EndPos
+		} else if c, ok := document.constants[identifierName]; ok {
+			start = c.Name.Pos
+			end = c.Name.EndPos
+		} else if d, ok := document.defines.GetDefine(identifierName, token.Pos); ok {
+			start = d.Name.Pos
+			end = d.Name.EndPos
+		} else {
+			return nil, nil
+		}
 	}
 
 	return &protocol.Location{
