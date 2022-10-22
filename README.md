@@ -10,6 +10,7 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 - [x] signature help
 - [x] documentation on hover
 - [x] display and edit colors
+- [x] goto definition
 - [ ] symbol rename
 
 ## Installation
