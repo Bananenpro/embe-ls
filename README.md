@@ -15,7 +15,9 @@ An [LSP](https://microsoft.github.io/language-server-protocol) implementation fo
 
 ## Installation
 
-[Build](#building) the `embe-ls` binary and place it somewhere in your PATH.
+Embe-ls should automatically come with your *embe* installation.
+
+If not you can [build](#building) the `embe-ls` binary and place it somewhere in your PATH manually.
 
 ### VS Code
 
