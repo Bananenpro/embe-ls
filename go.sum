@@ -1,5 +1,5 @@
-github.com/Bananenpro/embe v0.3.4 h1:EOQJv7wnm0LD7K0I8WR2qyCsa97OUQqj8Q6Zg7Xfu48=
-github.com/Bananenpro/embe v0.3.4/go.mod h1:4F8QgBfL/BT1X2OelRFRDGkJ6LIsg8DZlVjNOXPfsmM=
+github.com/Bananenpro/embe v0.3.5 h1:4lLXWL2iaxGNEy8vGToMhsJFvMsCLrZiPz7fteilSSE=
+github.com/Bananenpro/embe v0.3.5/go.mod h1:4F8QgBfL/BT1X2OelRFRDGkJ6LIsg8DZlVjNOXPfsmM=
 github.com/adrg/xdg v0.4.0 h1:RzRqFcjH4nE5C6oTAxhBtoE2IRyjBSa62SCbyPidvls=
 github.com/adrg/xdg v0.4.0/go.mod h1:N6ag73EX4wyxeaoeHctc1mas01KZgsj5tYiAIwqJE/E=
 github.com/aymanbagabas/go-osc52 v1.0.3/go.mod h1:zT8H+Rk4VSabYN90pWyugflM3ZhpTZNC7cASDfUCdT4=
@@ -57,8 +57,8 @@ golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACk
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/crypto v0.1.0 h1:MDRAIl0xIo9Io2xV565hzXHw3zVseKrJKodhohM5CjU=
 golang.org/x/crypto v0.1.0/go.mod h1:RecgLatLF4+eUMCP1PoPZQb+cVrJcOPbHkTkbkB9sbw=
-golang.org/x/exp v0.0.0-20221019170559-20944726eadf h1:nFVjjKDgNY37+ZSYCJmtYf7tOlfQswHqplG2eosjOMg=
-golang.org/x/exp v0.0.0-20221019170559-20944726eadf/go.mod h1:cyybsKvd6eL0RnXn6p/Grxp8F5bW7iYuBgsNCOHpMYE=
+golang.org/x/exp v0.0.0-20221023144134-a1e5550cf13e h1:SkwG94eNiiYJhbeDE018Grw09HIN/KB9NlRmZsrzfWs=
+golang.org/x/exp v0.0.0-20221023144134-a1e5550cf13e/go.mod h1:cyybsKvd6eL0RnXn6p/Grxp8F5bW7iYuBgsNCOHpMYE=
 golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/image v0.1.0 h1:r8Oj8ZA2Xy12/b5KZYj3tuv7NG/fBz3TwQVvpJ9l8Rk=
 golang.org/x/image v0.1.0/go.mod h1:iyPr49SD/G/TBxYVB/9RRtGUT5eNbo2u4NamWeQcD5c=
