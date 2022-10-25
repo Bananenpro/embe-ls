@@ -1,5 +1,7 @@
 # embe-ls
 
+## IMPORTANT: embe-ls now lives in the main embe repository: [link](https://github.com/Bananenpro/embe/tree/main/cmd/embe-ls)
+
 An [LSP](https://microsoft.github.io/language-server-protocol) implementation for [embe](https://github.com/Bananenpro/embe).
 
 ## Features
